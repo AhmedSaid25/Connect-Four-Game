@@ -21,7 +21,8 @@ class Board:
             if(self.board[0][col]=='_'):return True
             else : return False
 
-    def set_cell(self,player,i,j):
+    def set_cell(self,player,j):
+        i = self.getFirstFreeRow(j)
         self.board[i][j]=player
 
 
@@ -85,6 +86,11 @@ class Board:
         return grid
 
     def _check_if_game_end(self, grid):
+        if self.opWin():
+            return True
+        if self.iWin():
+            return True
+
         for i in range(0, len(grid)):
             for j in range(0, len(grid[i])):
                 if grid[i][j] == EMPTY and self.board[i][j] != EMPTY:
@@ -103,3 +109,101 @@ class Board:
             self._get_grid_cordinates()[column][0] + LEFT,
             self._get_grid_cordinates()[column][1] + TOP,
         )
+
+    def getAvailableColumns(self):
+        columns = []
+        for j in range (0,7):
+            if self.board[0][j] == EMPTY:
+                columns.append(j)
+        return columns
+
+    def getFirstFreeRow(self, j):
+        i = 5
+        while i>=0 :
+            if self.board[i][j] == EMPTY  :
+                break
+            i-=1
+        return i
+
+
+    # functions to see if opponent won
+    def HorizontalWon(self, board, i, j, Op):
+        flag = True
+        counter = 0
+        while counter < 4:
+            if board[i][j] != Op:
+                flag = False
+                break
+            counter += 1
+            j += 1
+        return flag
+
+    def VerticalWon(self, board, i, j, Op):
+        flag = True
+        counter = 0
+        while counter < 4:
+            if board[i][j] != Op:
+                flag = False
+                break
+            counter += 1
+            i += 1
+        return flag
+
+    # this diagonal \
+    def MainDiagonalWon(self, board, i, j, Op):
+        flag = True
+        counter = 0
+        while counter < 4:
+            if board[i][j] != Op:
+                flag = False
+                break
+            counter += 1
+            j += 1
+            i += 1
+        return flag
+
+    def OtherDiagonalWon(self, board, i, j, Op):
+        flag = True
+        counter = 0
+        while counter < 4:
+            if board[i][j] != Op:
+                flag = False
+                break
+            counter += 1
+            j += 1
+            i -= 1
+        return flag
+
+    def iWin(self):
+        return self.Win('X')
+    def opWin(self):
+        return self.Win('O')
+
+
+    def Win(self, symbol):
+        i = 0
+        j = 0
+        # checking for horizontal win
+        for i in range(0, 6):
+            for j in range(0, 4):
+                if (self.HorizontalWon(self.board, i, j, symbol)):
+                    return True
+        # checking for vertical win
+        for j in range(0, 7):
+            for i in range(0, 3):
+                if (self.VerticalWon(self.board, i, j, symbol)):
+                    return True
+        # checking for main diagonal win
+        for i in range(0, 3):
+            for j in range(0, 4):
+                if (self.MainDiagonalWon(self.board, i, j, symbol)):
+                    return True
+
+        # checking for other diagonal win
+        for i in range(0, 3):
+            for j in range(3, 7):
+                if (self.OtherDiagonalWon(self.board, i, j, symbol)):
+                    return True
+
+        return False;
+
