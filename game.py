@@ -8,19 +8,18 @@ from Minimax import *
 def main():
     board = Board()
 
-    board.set_cell('O',1)
-    board.set_cell('X',2)
-    board.set_cell('O', 3)
-    board.set_cell('O', 4)
-    board.set_cell('X', 1)
-    board.set_cell('X', 2)
-    board.set_cell('X', 3)
-    board.set_cell('O', 2)
+    # board.set_cell('O',1)
+    # board.set_cell('X',2)
+    # board.set_cell('O', 3)
+    # board.set_cell('O', 4)
+    # board.set_cell('X', 1)
+    # board.set_cell('X', 2)
+    # board.set_cell('X', 3)
+    # board.set_cell('O', 2)
 
-    available = [5,3,2,3,4,5,5]
-    new = giveAllScores(board, available)
+    # available = [5,3,2,3,4,5,5]
+    # new = board.giveAllScores(board, available)
     columns = board.getAvailableColumns()
-    print(new)
     print(columns)
     board.print_grid()
 
@@ -35,9 +34,9 @@ def main():
         (game_board, game_end) = board.get_game_grid()
 
         # FOR DEBUG PURPOSES
-        board.print_grid(game_board)
+        #board.print_grid(game_board)
         # YOUR CODE GOES HERE
-        bestColumn = bestMove(board)
+        bestColumn, score = Minimax(board,4,True)
         board.select_column(bestColumn)
         board.set_cell('O', bestColumn)
         # Insert here the action you want to perform based on the output of the algorithm
@@ -45,7 +44,7 @@ def main():
         random_column = random.randint(0, 6)
         board.select_column(random_column)
         board.set_cell('X', random_column)
-        print(board.board)
+        board.print_grid()
 
         time.sleep(2)
 

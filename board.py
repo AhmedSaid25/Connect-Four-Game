@@ -1,6 +1,6 @@
 from PIL import ImageGrab
 import pyautogui
-
+from Minimax import *
 # YOU MAY NEED TO CHANGE THESE VALUES BASED ON YOUR SCREEN SIZE
 LEFT = 570
 TOP = 200
@@ -17,6 +17,11 @@ class Board:
     def __init__(self) :
         self.board = [[EMPTY for i in range(7)] for j in range(6)]
 
+    def getBoard(self):
+        newBoard = []
+        for i in range(0,7):
+            for j in range (0,6):
+                newBoard[i][j] = self.board[i][j]
     def valid_move(self,col):
             if(self.board[0][col]=='_'):return True
             else : return False
@@ -206,4 +211,106 @@ class Board:
                     return True
 
         return False;
+
+    def giveAllScores(self, vector):
+        for element in range(0, len(vector)):
+            if vector[element] == -1:
+                continue
+            vector[element] = self.giveScore(self.board, vector[element], element)
+        return vector
+
+    def countVertical(self, i, j):
+        acc = 0
+        i -= 1
+        while (i > 0 and j > 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
+            acc += 1
+            i += 1
+        return acc + 1
+
+    def countHorizontal(self,i, j):
+        acc = 0
+        tmp = j
+        j -= 1
+        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
+            acc += 1
+            j -= 1
+        j = tmp + 1
+        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
+            acc += 1
+            j += 1
+        return acc + 1
+
+    # this / diagonal
+    def mainDiagonal(self, i, j):
+        acc = 0
+        tmpj = j
+        tmpi = i
+        j += 1
+        i -= 1
+        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
+            acc += 1
+            j += 1
+            i -= 1
+        j = tmpi - 1
+        i = tmpj + 1
+        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
+            acc += 1
+            j -= 1
+            i += 1
+        return acc + 1
+
+    # this diagonal \
+    def otherDiagonal(self, i, j):
+        acc = 0
+        tmpj = j
+        tmpi = i
+        j -= 1
+        i -= 1
+        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
+            acc += 1
+            j -= 1
+            i -= 1
+        j = tmpi + 1
+        i = tmpj + 1
+        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
+            acc += 1
+            j += 1
+            i += 1
+        return acc + 1
+
+    def giveScore(self, i, j):
+        fours = 0
+        threes = 0
+        twos = 0
+        ones = 0
+        freqArr = [0, 0, 0, 0, 0]
+        hor = self.countHorizontal(i, j)
+        ver = self.countVertical(i, j)
+        d1 = self.mainDiagonal(i, j)
+        d2 = self.otherDiagonal(i, j)
+        freqArr[hor] += 1
+        freqArr[ver] += 1
+        freqArr[d1] += 1
+        freqArr[d2] += 1
+        # score = freqArr[4] + freqArr[3] + freqArr[2] + freqArr[1]
+        score = freqArr[4] * 9999999 + freqArr[3] * 999 + freqArr[2] * 99 + freqArr[1] * 9
+        if self.opWin():
+            score = -999999999999
+        return score
+
+
+    def getBoardScore(self):
+        if(self.opWin):
+            return -9999999999999
+        if(self.iWin):
+            return 99999999999999
+        else:
+            sum = 0
+            for i in range (0,7):
+                for j in range (0,6):
+                    if(self.board[i][j]=='X'):
+                        sum += self.giveScore(i,j)
+
+            return sum
+
 
