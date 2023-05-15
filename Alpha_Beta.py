@@ -2,7 +2,6 @@ def Min_max(board,depth,alpha,beta, maximizer):
     available=board.getAvailableColumns()
 
     #check winning or game is over ( base case )
-    #return board score
 
     if(maximizer):
         mx = -math.inf
