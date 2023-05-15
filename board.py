@@ -22,6 +22,52 @@ class Board:
         for i in range(0,7):
             for j in range (0,6):
                 newBoard[i][j] = self.board[i][j]
+
+    def Minimax(board, currentDepth, maxim):
+        columns = getAvailableColumns()
+        gameEnd = board._check_if_game_end(board.board)
+
+        if (gameEnd or currentDepth == 0):
+            if gameEnd:
+                if board.iWin():
+                    return (10000000000000)
+                elif board.opWin():
+                    return (-10000000000000)
+                else:
+                    return (0)
+            else:
+                return (board.getBoardScore())  # ha3melo now
+            # return heuristic for the node
+
+        # the maximizing agent
+        if (maxim):
+            curr = -math.inf
+            column = 0
+            for c in columns:
+                boardCopy = copy.deepcopy(board)
+                # boardCopy.board = board.getBoard()
+                # boardCopy.set_cell('O',c)
+                newScore = Minimax(boardCopy, currentDepth - 1, False)
+                if newScore > curr:
+                    curr = newScore
+                    column = c
+            return curr
+        # the minimizing agent
+        else:
+            curr = math.inf
+            column = 0
+            position = 0  # try to make it random
+            for c in columns:
+                # boardCopy = board.copy()
+                boardCopy = copy.deepcopy(board)
+                # boardCopy.board = board.getBoard()
+                # boardCopy.set_cell('X',c)
+                newScore = Minimax(boardCopy, currentDepth - 1, True)
+                if newScore < curr:
+                    curr = newScore
+                    column = c
+            return curr
+
     def valid_move(self,col):
             if(self.board[0][col]=='_'):return True
             else : return False
@@ -91,9 +137,9 @@ class Board:
         return grid
 
     def _check_if_game_end(self, grid):
-        if self.opWin():
+        if opWin(Board):
             return True
-        if self.iWin():
+        if iWin(Board):
             return True
 
         for i in range(0, len(grid)):
@@ -109,208 +155,6 @@ class Board:
         self.board = new_grid
         return (self.board, is_game_end)
 
-    def select_column(self, column):
-        pyautogui.click(
-            self._get_grid_cordinates()[column][0] + LEFT,
-            self._get_grid_cordinates()[column][1] + TOP,
-        )
 
-    def getAvailableColumns(self):
-        columns = []
-        for j in range (0,7):
-            if self.board[0][j] == EMPTY:
-                columns.append(j)
-        return columns
-
-    def getFirstFreeRow(self, j):
-        i = 5
-        while i>=0 :
-            if self.board[i][j] == EMPTY  :
-                break
-            i-=1
-        return i
-
-
-    # functions to see if opponent won
-    def HorizontalWon(self, board, i, j, Op):
-        flag = True
-        counter = 0
-        while counter < 4:
-            if board[i][j] != Op:
-                flag = False
-                break
-            counter += 1
-            j += 1
-        return flag
-
-    def VerticalWon(self, board, i, j, Op):
-        flag = True
-        counter = 0
-        while counter < 4:
-            if board[i][j] != Op:
-                flag = False
-                break
-            counter += 1
-            i += 1
-        return flag
-
-    # this diagonal \
-    def MainDiagonalWon(self, board, i, j, Op):
-        flag = True
-        counter = 0
-        while counter < 4:
-            if board[i][j] != Op:
-                flag = False
-                break
-            counter += 1
-            j += 1
-            i += 1
-        return flag
-
-    def OtherDiagonalWon(self, board, i, j, Op):
-        flag = True
-        counter = 0
-        while counter < 4:
-            if board[i][j] != Op:
-                flag = False
-                break
-            counter += 1
-            j += 1
-            i -= 1
-        return flag
-
-    def iWin(self):
-        return self.Win('X')
-    def opWin(self):
-        return self.Win('O')
-
-
-    def Win(self, symbol):
-        i = 0
-        j = 0
-        # checking for horizontal win
-        for i in range(0, 6):
-            for j in range(0, 4):
-                if (self.HorizontalWon(self.board, i, j, symbol)):
-                    return True
-        # checking for vertical win
-        for j in range(0, 7):
-            for i in range(0, 3):
-                if (self.VerticalWon(self.board, i, j, symbol)):
-                    return True
-        # checking for main diagonal win
-        for i in range(0, 3):
-            for j in range(0, 4):
-                if (self.MainDiagonalWon(self.board, i, j, symbol)):
-                    return True
-
-        # checking for other diagonal win
-        for i in range(0, 3):
-            for j in range(3, 7):
-                if (self.OtherDiagonalWon(self.board, i, j, symbol)):
-                    return True
-
-        return False;
-
-    def giveAllScores(self, vector):
-        for element in range(0, len(vector)):
-            if vector[element] == -1:
-                continue
-            vector[element] = self.giveScore(self.board, vector[element], element)
-        return vector
-
-    def countVertical(self, i, j):
-        acc = 0
-        i -= 1
-        while (i > 0 and j > 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
-            acc += 1
-            i += 1
-        return acc + 1
-
-    def countHorizontal(self,i, j):
-        acc = 0
-        tmp = j
-        j -= 1
-        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
-            acc += 1
-            j -= 1
-        j = tmp + 1
-        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
-            acc += 1
-            j += 1
-        return acc + 1
-
-    # this / diagonal
-    def mainDiagonal(self, i, j):
-        acc = 0
-        tmpj = j
-        tmpi = i
-        j += 1
-        i -= 1
-        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
-            acc += 1
-            j += 1
-            i -= 1
-        j = tmpi - 1
-        i = tmpj + 1
-        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
-            acc += 1
-            j -= 1
-            i += 1
-        return acc + 1
-
-    # this diagonal \
-    def otherDiagonal(self, i, j):
-        acc = 0
-        tmpj = j
-        tmpi = i
-        j -= 1
-        i -= 1
-        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
-            acc += 1
-            j -= 1
-            i -= 1
-        j = tmpi + 1
-        i = tmpj + 1
-        while (i >= 0 and j >= 0 and i < 6 and j < 7 and self.board[i][j] == 'O'):
-            acc += 1
-            j += 1
-            i += 1
-        return acc + 1
-
-    def giveScore(self, i, j):
-        fours = 0
-        threes = 0
-        twos = 0
-        ones = 0
-        freqArr = [0, 0, 0, 0, 0]
-        hor = self.countHorizontal(i, j)
-        ver = self.countVertical(i, j)
-        d1 = self.mainDiagonal(i, j)
-        d2 = self.otherDiagonal(i, j)
-        freqArr[hor] += 1
-        freqArr[ver] += 1
-        freqArr[d1] += 1
-        freqArr[d2] += 1
-        # score = freqArr[4] + freqArr[3] + freqArr[2] + freqArr[1]
-        score = freqArr[4] * 9999999 + freqArr[3] * 999 + freqArr[2] * 99 + freqArr[1] * 9
-        if self.opWin():
-            score = -999999999999
-        return score
-
-
-    def getBoardScore(self):
-        if(self.opWin):
-            return -9999999999999
-        if(self.iWin):
-            return 99999999999999
-        else:
-            sum = 0
-            for i in range (0,7):
-                for j in range (0,6):
-                    if(self.board[i][j]=='X'):
-                        sum += self.giveScore(i,j)
-
-            return sum
 
 

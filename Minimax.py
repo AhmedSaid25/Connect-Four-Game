@@ -1,34 +1,19 @@
-"""
-  0 1 2 3 4 5 6
-0
-1
-2
-3
-4
-5
-
-"""
 
 import math
+import copy
 
-# GEEKS FOR GEEKS
-# def minimax(curDepth, nodeIndex,maxTurn, scores,targetDepth):
-#     # base case : targetDepth reached
-#     if (curDepth == targetDepth):
-#         return scores[nodeIndex]
-#
-#     if (maxTurn):
-#         return max(minimax(curDepth + 1, nodeIndex * 2,
-#                            False, scores, targetDepth),
-#                    minimax(curDepth + 1, nodeIndex * 2 + 1,
-#                            False, scores, targetDepth))
-#
-#     else:
-#         return min(minimax(curDepth + 1, nodeIndex * 2,
-#                            True, scores, targetDepth),
-#                    minimax(curDepth + 1, nodeIndex * 2 + 1,
-#                            True, scores, targetDepth))
-
+def makeMinimax (board, player):
+    columns = board.getAvailableColumns()
+    score = - math.inf
+    bestc =0
+    for c in columns:
+        boardCopy = copy.deepcopy(board)
+        boardCopy.set_cell(player, c)
+        newscore = Minimax(boardCopy, 4, True)
+        if newscore>score:
+            score = newscore
+            bestc = c
+    return bestc
 
 def Minimax(board, currentDepth, maxim):
     columns = board.getAvailableColumns()
@@ -37,13 +22,13 @@ def Minimax(board, currentDepth, maxim):
     if(gameEnd or currentDepth ==0):
         if gameEnd:
             if board.iWin():
-                return (None, 10000000000000)
+                return (10000000000000)
             elif board.opWin():
-                return (None, -10000000000000)
+                return (-10000000000000)
             else:
-                return (None,0)
+                return (0)
         else:
-            return (None, board.getBoardScore()) #ha3melo now
+            return ( board.getBoardScore()) #ha3melo now
         #return heuristic for the node
 
     # the maximizing agent
@@ -51,30 +36,26 @@ def Minimax(board, currentDepth, maxim):
         curr = -math.inf
         column = 0
         for c in columns:
-            boardCopy = board.copy()
+            boardCopy = copy.deepcopy(board)
             #boardCopy.board = board.getBoard()
             #boardCopy.set_cell('O',c)
-            dummy, newScore = Minimax(boardCopy, currentDepth-1, False)
+            newScore = Minimax(boardCopy, currentDepth-1, False)
             if newScore > curr:
                 curr = newScore
                 column = c
-        return column, curr
+        return curr
     # the minimizing agent
     else:
         curr = math.inf
         column = 0
         position = 0 # try to make it random
         for c in columns:
-            boardCopy = board.copy()
+            # boardCopy = board.copy()
+            boardCopy = copy.deepcopy(board)
             #boardCopy.board = board.getBoard()
             #boardCopy.set_cell('X',c)
-            dummy, newScore = Minimax(boardCopy, currentDepth-1, True)
+            newScore = Minimax(boardCopy, currentDepth-1, True)
             if newScore < curr:
                 curr = newScore
                 column = c
-        return column , curr
-
-
-
-
-
+        return curr
