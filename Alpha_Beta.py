@@ -1,3 +1,4 @@
+import math
 def Min_max(board,depth,alpha,beta, maximizer):
     available=board.getAvailableColumns()
 
