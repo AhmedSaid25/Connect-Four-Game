@@ -3,7 +3,7 @@ import pyautogui
 
 # YOU MAY NEED TO CHANGE THESE VALUES BASED ON YOUR SCREEN SIZE
 LEFT = 570
-TOP = 200
+TOP = 255
 RIGHT = 1350
 BOTTOM = 875
 
@@ -13,7 +13,7 @@ BLUE = 2
 
 
 class Board:
-    def _init_(self) -> None:
+    def __init__(self) -> None:
         self.board = [[EMPTY for i in range(7)] for j in range(6)]
 
     def print_grid(self, grid):
@@ -69,7 +69,7 @@ class Board:
     def _get_grid(self):
         cropedImage = self._capture_image()
         pixels = self._convert_image_to_grid(cropedImage)
-        # cropedImage.show()
+       # cropedImage.show()
         grid = self._transpose_grid(pixels)
         return grid
 

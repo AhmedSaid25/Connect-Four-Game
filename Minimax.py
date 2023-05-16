@@ -2,17 +2,19 @@ import time
 import random
 import math
 import copy
-
+EMPTY = 0
+RED = 1
+BLUE = 2
 #  0   1   2   3   4   5   6
-Board = [['_', '_', '_', '_', '_', '_', '_'],  # 0
+Grid = [['_', '_', '_', '_', '_', '_', '_'],  # 0
          ['_', '_', '_', '_', '_', '_', '_'],  # 1
          ['_', '_', '_', '_', '_', '_', '_'],  # 2
          ['_', '_', '_', '_', '_', '_', '_'],  # 3
          ['_', '_', '_', '_', '_', '_', '_'],  # 4
          ['_', '_', '_', '_', '_', '_', '_']  # 5
          ]
-Ai_player = 'O'
-opo = 'X'
+Ai_player = RED
+opo = BLUE
 
 
 ######## board change ##########
@@ -24,7 +26,7 @@ def set_cell(grid, player, j):
 def getAvailableColumns(grid):
     columns = []
     for j in range(0, 7):
-        if grid[0][j] == '_':
+        if grid[0][j] == EMPTY:
             columns.append(j)
     return columns
 
@@ -32,16 +34,16 @@ def getAvailableColumns(grid):
 def getFirstFreeRow(grid, j):
     i = 5
     while i >= 0:
-        if grid[i][j] == '_':
+        if grid[i][j] == EMPTY:
             break
         i -= 1
     return i
 
 
 def check_if_game_end(grid):
-    if Win(grid, 'O'):
+    if Win(grid, RED):
         return True
-    if Win(grid, 'X'):
+    if Win(grid, BLUE):
         return True
     columns = getAvailableColumns(grid)
     if columns == []:
@@ -53,11 +55,11 @@ def check_if_game_end(grid):
 
 
 ########### WIN PART  ##################
-def HorizontalWon(Board, i, j, Op):
+def HorizontalWon(board, i, j, Op):
     flag = True
     counter = 0
     while counter < 4:
-        if Board[i][j] != Op:
+        if board[i][j] != Op:
             flag = False
             break
         counter += 1
@@ -132,11 +134,11 @@ def Win(board, symbol):
 
 
 def iWin(board):
-    return Win(board, 'O')
+    return Win(board, RED)
 
 
 def opWin(board):
-    return Win(board, 'X')
+    return Win(board, BLUE)
 
 
 #########    END OF Win Part    ##################
@@ -150,12 +152,13 @@ def do_move(board, player):
 
 def makeMinimax(grid):
 
+    print_grid(grid)
     scores = []
     columns = getAvailableColumns(grid)
     for i in range(7):
         if i in columns:
             boardCopy = copy.deepcopy(grid)
-            set_cell(boardCopy, 'O', i)
+            set_cell(boardCopy, RED, i)
             score = Minimax(boardCopy, 4, False)
             scores.append(score)
         else:
@@ -163,6 +166,15 @@ def makeMinimax(grid):
     print(scores)
     bestc = max(range(len(scores)), key=lambda i: scores[i])
     return bestc
+def convert (mat1 ,mat2):
+    for i in range(len(mat2)):
+        for j in range(len(mat2[i])):
+            if(mat2[i][j]==EMPTY):
+                mat1[i][j]=EMPTY
+            elif mat2[i][j]==RED:
+                mat1[i][j]=RED
+            elif mat2[i][j]==BLUE:
+                mat1[i][j]=BLUE
 
 
 def Minimax(grid, currentDepth, maxim):
@@ -170,9 +182,9 @@ def Minimax(grid, currentDepth, maxim):
     gameEnd = check_if_game_end(grid)
     if gameEnd or currentDepth == 0:
         if gameEnd:
-            if Win(grid, 'O'):
+            if Win(grid, RED):
                 return 10000000000000
-            elif Win(grid, 'X'):
+            elif Win(grid, BLUE):
                 return -10000000000000
             else:
                 return 0
@@ -186,7 +198,7 @@ def Minimax(grid, currentDepth, maxim):
         #bestc=3
         for c in columns:
             boardCopy = copy.deepcopy(grid)
-            set_cell(boardCopy, 'O', c)
+            set_cell(boardCopy, RED, c)
             newScore = Minimax(boardCopy, currentDepth - 1, False)
             if newScore > curr:
                 curr = newScore
@@ -198,7 +210,7 @@ def Minimax(grid, currentDepth, maxim):
         #bestc = 3
         for c in columns:
             boardCopy = copy.deepcopy(grid)
-            set_cell(boardCopy, 'X', c)
+            set_cell(boardCopy, BLUE, c)
             newScore = Minimax(boardCopy, currentDepth - 1, True)
             if newScore < curr:
                 curr = newScore
@@ -219,7 +231,7 @@ def getScore(grid):
         score = 0
         for i in range(0, 6):
             for j in range(0, 7):
-                if (grid[i][j] == 'O'):
+                if (grid[i][j] == RED):
                     score += giveScore(grid, i, j)
 
 
@@ -309,20 +321,20 @@ def giveScore(grid, i, j):
     score=0
     if(j==3):
         score += 10
-    hor = countHorizontal(grid, i, j, 'O')
-    ver = countVertical(grid, i, j,'O')
-    d1 = mainDiagonal(grid, i, j,'O')
-    d2 = otherDiagonal(grid, i, j, 'O')
+    hor = countHorizontal(grid, i, j, RED)
+    ver = countVertical(grid, i, j,RED)
+    d1 = mainDiagonal(grid, i, j,RED)
+    d2 = otherDiagonal(grid, i, j, RED)
     freqArr[hor] += 1
     freqArr[ver] += 1
     freqArr[d1] += 1
     freqArr[d2] += 1
     #### same for oponent ####
     freqArrO = [0, 0, 0, 0, 0]
-    horO = countHorizontal(grid, i, j, 'X')
-    verO = countVertical(grid, i, j, 'X')
-    d1O = mainDiagonal(grid, i, j, 'X')
-    d2O = otherDiagonal(grid, i, j, 'X')
+    horO = countHorizontal(grid, i, j, BLUE)
+    verO = countVertical(grid, i, j, BLUE)
+    d1O = mainDiagonal(grid, i, j, BLUE)
+    d2O = otherDiagonal(grid, i, j, BLUE)
     freqArrO[horO] += 1
     freqArrO[verO] += 1
     freqArrO[d1O] += 1
@@ -355,7 +367,7 @@ def play(board):
     game_end = False
   #  print(getScore(board))
     while not game_end:
-        do_move(board, 'O')
+        do_move(board, RED)
         if iWin(board):
             print("agent win")
             game_end = True
@@ -364,7 +376,7 @@ def play(board):
         print_grid(board)
 
         random_column = random.randint(0, 6)
-        set_cell(board, 'X', random_column)
+        set_cell(board, BLUE, random_column)
         if opWin(board):
             print("computer win")
             game_end = True
