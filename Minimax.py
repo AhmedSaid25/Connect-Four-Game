@@ -6,7 +6,7 @@ EMPTY = 0
 RED = 1
 BLUE = 2
 #  0   1   2   3   4   5   6
-Grid = [[0, 0, 0, 0, 0, 0, 0],  # 0
+Board = [[0, 0, 0, 0, 0, 0, 0], # 0
         [0, 0, 0, 0, 0, 0, 0],  # 1
         [0, 0, 0, 0, 0, 0, 0],  # 2
         [0, 0, 0, 0, 0, 0, 0],  # 3
@@ -388,4 +388,4 @@ def play(board):
         print_grid(board)
 
 if __name__ == "__main__":
-    play(Grid)
+    play(Board)
