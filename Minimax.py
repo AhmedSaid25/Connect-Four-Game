@@ -6,12 +6,12 @@ EMPTY = 0
 RED = 1
 BLUE = 2
 #  0   1   2   3   4   5   6
-Grid = [['_', '_', '_', '_', '_', '_', '_'],  # 0
-         ['_', '_', '_', '_', '_', '_', '_'],  # 1
-         ['_', '_', '_', '_', '_', '_', '_'],  # 2
-         ['_', '_', '_', '_', '_', '_', '_'],  # 3
-         ['_', '_', '_', '_', '_', '_', '_'],  # 4
-         ['_', '_', '_', '_', '_', '_', '_']  # 5
+Grid = [[0, 0, 0, 0, 0, 0, 0],  # 0
+        [0, 0, 0, 0, 0, 0, 0],  # 1
+        [0, 0, 0, 0, 0, 0, 0],  # 2
+        [0, 0, 0, 0, 0, 0, 0],  # 3
+        [0, 0, 0, 0, 0, 0, 0],  # 4
+         [0, 0, 0, 0, 0, 0, 0]  # 5
          ]
 Ai_player = RED
 opo = BLUE
@@ -365,8 +365,11 @@ def print_grid(board):
 def play(board):
     cnt = 0
     game_end = False
+    Agent = 1
+    Computer = 2
   #  print(getScore(board))
     while not game_end:
+        # first parameter is the board, first player, second player
         do_move(board, RED)
         if iWin(board):
             print("agent win")
@@ -384,3 +387,5 @@ def play(board):
             break
         print_grid(board)
 
+if __name__ == "__main__":
+    play(Grid)
