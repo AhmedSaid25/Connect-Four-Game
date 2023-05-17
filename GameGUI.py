@@ -4,6 +4,13 @@ import numpy as np
 import pygame
 import random
 import copy
+Grid = [[0, 0, 0, 0, 0, 0, 0],  # 0
+        [0, 0, 0, 0, 0, 0, 0],  # 1
+        [0, 0, 0, 0, 0, 0, 0],  # 2
+        [0, 0, 0, 0, 0, 0, 0],  # 3
+        [0, 0, 0, 0, 0, 0, 0],  # 4
+        [0, 0, 0, 0, 0, 0, 0]  # 5
+       ]
 def reverseCopy(board):
     column = 7
     row = 6
@@ -37,9 +44,9 @@ def ConnectFour():
     def PlayTime_board(board):
         for c in range(column):
             for r in range(row):
-                if board[r][c] == 'X':
+                if board[r][c] == 2:
                     pygame.draw.circle(screen, RED, (int(c * squareSize + squareSize / 2), height - int(r * squareSize + squareSize / 2)), radius)
-                elif board[r][c] == 'O':
+                elif board[r][c] == 1:
                     pygame.draw.circle(screen, YELLOW, (int(c * squareSize + squareSize / 2), height - int(r * squareSize + squareSize / 2)), radius)
         pygame.display.update()
 
@@ -49,8 +56,8 @@ def ConnectFour():
             for r in range(row):
                 pygame.draw.rect(screen, BLUE, (c * squareSize, r * squareSize + squareSize, squareSize, squareSize))
                 pygame.draw.circle(screen, BLACK, ( int(c * squareSize + squareSize / 2), int(r * squareSize + squareSize + squareSize / 2)), radius)
-    board = Board
-    printBoard(board)
+    board = Grid
+    #printBoard(board)
     GameOver = False
     pygame.init()
     squareSize = 100
@@ -70,8 +77,9 @@ def ConnectFour():
     game_end = False
     #  print(getScore(board))
     while not game_end:
-        do_move(board, 'O')
-        if iWin(board):
+        print(board)
+        do_move(board, 1,2)
+        if Win(board,1):
             font = pygame.font.Font(None, 75)
             WinningAgent = font.render("Agent Wins !", True, YELLOW)
             text_rect = WinningAgent.get_rect(center=(width/2, height*1/10))
@@ -82,9 +90,10 @@ def ConnectFour():
         new_board = reverseCopy(board)
         PlayTime_board(new_board)
         pygame.display.update()
-        random_column = random.randint(0, 6)
-        set_cell(board, 'X', random_column)
-        if opWin(board):
+        do_move(board, 2, 1)
+        # random_column = random.randint(0, 6)
+        # set_cell(board, 'X', random_column)
+        if Win(board,2):
             font = pygame.font.Font(None, 75)
             WinningComputer = font.render("Computer Wins !", True, RED)
             text_rect = WinningComputer.get_rect(center=(width / 2, height * 1 / 10))
@@ -124,5 +133,5 @@ def menu(board):
 
 
 if __name__ == '__main__':
-    menu(Board)
+    menu(Grid)
     #play(Board)
