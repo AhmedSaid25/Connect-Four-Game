@@ -11,6 +11,7 @@ Grid = [[0, 0, 0, 0, 0, 0, 0],  # 0
         [0, 0, 0, 0, 0, 0, 0],  # 4
         [0, 0, 0, 0, 0, 0, 0]  # 5
        ]
+
 def reverseCopy(board):
     column = 7
     row = 6
@@ -86,6 +87,10 @@ def ConnectFour():
             screen.blit(WinningAgent, text_rect)
             game_end = True
             print_grid(board)
+            new_board = reverseCopy(board)
+            PlayTime_board(new_board)
+            pygame.display.update()
+            break
 
         new_board = reverseCopy(board)
         PlayTime_board(new_board)
@@ -95,11 +100,15 @@ def ConnectFour():
         # set_cell(board, 'X', random_column)
         if Win(board,2):
             font = pygame.font.Font(None, 75)
-            WinningComputer = font.render("Computer Wins !", True, RED)
+            WinningComputer = font.render("Computer wins !", True, RED)
             text_rect = WinningComputer.get_rect(center=(width / 2, height * 1 / 10))
             screen.blit(WinningComputer, text_rect)
             game_end = True
             print_grid(board)
+            new_board = reverseCopy(board)
+            PlayTime_board(new_board)
+            pygame.display.update()
+            break;
         print_grid(board)
 
 
@@ -128,6 +137,7 @@ def menu(board):
         Radiobutton(window, text=j, variable=u, value=hardness).pack(side=TOP, ipady=5)
 
     Playbutton = Button(window, text='play', bd='7', command=ConnectFour)
+
     Playbutton.pack()
     window.mainloop()
 
