@@ -94,7 +94,6 @@ def ConnectFour():
             PlayTime_board(new_board)
             pygame.display.update()
             break
-
         new_board = reverseCopy(board)
         PlayTime_board(new_board)
         pygame.display.update()
@@ -112,7 +111,11 @@ def ConnectFour():
             PlayTime_board(new_board)
             pygame.display.update()
             break;
+        new_board = reverseCopy(board)
+        PlayTime_board(new_board)
+        pygame.display.update()
         print_grid(board)
+        #time.sleep(2)
 
 
 def menu(board):
