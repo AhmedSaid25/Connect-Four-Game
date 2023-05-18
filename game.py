@@ -1,6 +1,7 @@
 from board import Board
 import time
 import random
+from Alpha_Beta import *
 from Minimax import makeMinimax
 import numpy as np
 # GAME LINK
@@ -20,7 +21,7 @@ def main():
         # print(Game)
 
         # YOUR CODE GOES HERE
-        bestColumn = makeMinimax(4,game_board,1,2)
+        bestColumn = makeAlphaBeta(5,game_board,1,2)
         board.print_grid (game_board)
         print("answer: ", bestColumn)
         board.select_column(bestColumn)

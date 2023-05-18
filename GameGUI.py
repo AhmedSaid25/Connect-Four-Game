@@ -1,5 +1,6 @@
 from Minimax import *
 from tkinter import *
+from Alpha_Beta import *
 import numpy as np
 import pygame
 import sys
@@ -85,7 +86,7 @@ def ConnectFour():
         ## shar7 el function :
         ##do_move(algorithm, depth, board, player1, player2)
         ## 1-> alpha beta, 2-> minimax
-        do_move(2,5,board, 1,2)
+        do_move(1,5,board, 1,2)
         if Win(board,1):
             font = pygame.font.Font(None, 75)
             WinningAgent = font.render("Agent Wins !", True, YELLOW)
@@ -97,12 +98,23 @@ def ConnectFour():
             PlayTime_board(new_board)
             pygame.display.update()
             break
+        if getAvailableColumns(board) == []:
+            font = pygame.font.Font(None, 75)
+            TieText = font.render("Tie Game!", True, BLUE)
+            text_rect = TieText.get_rect(center=(width / 2, height * 1 / 10))
+            screen.blit(TieText, text_rect)
+            game_end = True
+            print_grid(board)
+            new_board = reverseCopy(board)
+            PlayTime_board(new_board)
+            pygame.display.update()
+            break
         new_board = reverseCopy(board)
         PlayTime_board(new_board)
         pygame.display.update()
-        do_move(2,5,board, 2, 1)
+        do_move(1,5,board, 2, 1)
         # random_column = random.randint(0, 6)
-        # set_cell(board, 'X', random_column)
+        # set_cell(board, 2, random_column)
         if Win(board,2):
             font = pygame.font.Font(None, 75)
             WinningComputer = font.render("Computer wins !", True, RED)
@@ -113,12 +125,24 @@ def ConnectFour():
             new_board = reverseCopy(board)
             PlayTime_board(new_board)
             pygame.display.update()
-            break;
+            break
+        if getAvailableColumns(board) == []:
+            font = pygame.font.Font(None, 75)
+            TieText = font.render("Tie Game!", True, BLUE)
+            text_rect = TieText.get_rect(center=(width / 2, height * 1 / 10))
+            screen.blit(TieText, text_rect)
+            game_end = True
+            print_grid(board)
+            new_board = reverseCopy(board)
+            PlayTime_board(new_board)
+            pygame.display.update()
+            break
         new_board = reverseCopy(board)
         PlayTime_board(new_board)
         pygame.display.update()
         print_grid(board)
         #time.sleep(2)
+
 
 
 def menu(board):

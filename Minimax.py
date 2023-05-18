@@ -2,6 +2,7 @@ import time
 import random
 import math
 import copy
+import random
 EMPTY = 0
 RED = 1
 BLUE = 2
@@ -154,10 +155,10 @@ def Win(board, symbol):
 
 ########## MINMAX Algorithm   #########
 def do_move(algorithm,depth,grid, Agent, Computer):
-    if algorithm == 2:
-        best_column = makeMinimax(depth, grid, Agent, Computer)
+    if (algorithm ==1):
+        best_column = makeAlphaBeta(depth, grid, Agent, Computer)
     else:
-        best_column = makeAlphaBeta(depth,grid,Agent,Computer)
+        best_column = makeMinimax(depth, grid, Agent, Computer)
     set_cell(grid, Agent, best_column)
 
 
@@ -165,17 +166,20 @@ def makeMinimax(depth,grid, Agent, Computer):
 
     #print_grid(grid)
     scores = []
+
     columns = getAvailableColumns(grid)
-    for i in range(7):
-        if i in columns:
-            boardCopy = copy.deepcopy(grid)
-            set_cell(boardCopy, Agent, i)
-            score = Minimax(Agent, Computer,boardCopy, depth,False)
-            scores.append(score)
-        else:
-            scores.append(-math.inf)
+    #r = random.randint(0,len(columns))
+    bestc = columns[0]
+    bestscore = -math.inf
+    for i in columns:
+        boardCopy = copy.deepcopy(grid)
+        set_cell(boardCopy, Agent, i)
+        score = Minimax(Agent, Computer,boardCopy, depth,False)
+        scores.append(score)
+        if score>bestscore:
+            bestscore = score
+            bestc = i
     print(scores)
-    bestc = max(range(len(scores)), key=lambda i: scores[i])
     return bestc
 
 
@@ -223,24 +227,30 @@ def Minimax(Agent, Computer, grid, currentDepth, maxim):
 
 ########## MINMAX Algorithm   #########
 
-######## start of alpha beta pruning #####
-def makeAlphaBeta(depth, grid, Agent, Computer):
 
+
+###### ALPHA BETA PRUNING ######
+def makeAlphaBeta(depth,grid, Agent, Computer):
+    #print_grid(grid)
     scores = []
+
     columns = getAvailableColumns(grid)
-    for i in range(7):
-        if i in columns:
-            boardCopy = copy.deepcopy(grid)
-            set_cell(boardCopy, Agent, i)
-            score = AlphaBeta(Agent, Computer, boardCopy, depth, -float('inf'), float('inf'), False)
-            scores.append(score)
-        else:
-            scores.append(-math.inf)
-    bestc = max(range(len(scores)), key=lambda i: scores[i])
+    #r = random.randint(0,len(columns))
+    bestc = columns[0]
+    bestscore = -math.inf
+    for i in columns:
+        boardCopy = copy.deepcopy(grid)
+        set_cell(boardCopy, Agent, i)
+        score = AlphaBeta(Agent, Computer,boardCopy, depth,False, -math.inf, math.inf)
+        scores.append(score)
+        if score>bestscore:
+            bestscore = score
+            bestc = i
+    print(scores)
     return bestc
 
 
-def AlphaBeta(Agent, Computer, grid, currentDepth, alpha, beta, maxim):
+def AlphaBeta(Agent, Computer, grid, currentDepth, maxim, alpha, beta):
     columns = getAvailableColumns(grid)
     gameEnd = check_if_game_end(grid)
     if gameEnd or currentDepth == 0:
@@ -252,7 +262,7 @@ def AlphaBeta(Agent, Computer, grid, currentDepth, alpha, beta, maxim):
         for c in columns:
             boardCopy = copy.deepcopy(grid)
             set_cell(boardCopy, Agent, c)
-            newScore = AlphaBeta(Agent, Computer, boardCopy, currentDepth - 1, alpha, beta, False)
+            newScore = AlphaBeta(Agent, Computer, boardCopy, currentDepth - 1, False, alpha, beta)
             curr = max(curr, newScore)
             alpha = max(alpha, curr)
             if beta <= alpha:
@@ -263,53 +273,59 @@ def AlphaBeta(Agent, Computer, grid, currentDepth, alpha, beta, maxim):
         for c in columns:
             boardCopy = copy.deepcopy(grid)
             set_cell(boardCopy, Computer, c)
-            newScore = AlphaBeta(Agent, Computer, boardCopy, currentDepth - 1, alpha, beta, True)
+            newScore = AlphaBeta(Agent, Computer, boardCopy, currentDepth - 1, True, alpha, beta)
             curr = min(curr, newScore)
             beta = min(beta, curr)
             if beta <= alpha:
                 break
         return curr
-##### end of ALpha beta #######
 
 ######### get Score #########
 
 
 def getScore(grid, player, op):
-    myScore  = getPlayerScore(grid,player,op)
+    myScore = getPlayerScore(grid, player, op)
     opScore = getPlayerScore(grid, op, player)
+    score = 0
+    if Win(grid, player):
+        return math.inf  # Player wins
+    elif Win(grid, op):
+        return -math.inf # Oponent wins
+
     return myScore - opScore
 
 
 def giveScore(player, op, grid, i, j):
+    freqArr = [0, 0, 0, 0, 0]
     score = 0
-
-    if j == 3:
+    if (j == 3):
         score += 10
-
     hor = countHorizontal(grid, i, j, player)
     ver = countVertical(grid, i, j, player)
     d1 = mainDiagonal(grid, i, j, player)
     d2 = otherDiagonal(grid, i, j, player)
+    freqArr[hor] += 1
+    freqArr[ver] += 1
+    freqArr[d1] += 1
+    freqArr[d2] += 1
+    #### same for oponent ####
 
-    # Player's connection scores
-    if hor == 4 or ver == 4 or d1 == 4 or d2 == 4:
-        score += 999999
-    elif hor == 3 or ver == 3 or d1 == 3 or d2 == 3:
-        score += 100
-    elif hor == 2 or ver == 2 or d1 == 2 or d2 == 2:
-        score += 10
-
-    # Defensive scores to block opponent
-    if hor == 3 and ver != 1:
-        score += 50
-    if ver == 3 and hor != 1:
-        score += 50
-    if d1 == 3 and d2 != 1:
-        score += 50
-    if d2 == 3 and d1 != 1:
-        score += 50
-
+    freqArrO = [0, 0, 0, 0, 0]
+    horO = countHorizontal(grid, i, j, op)
+    verO = countVertical(grid, i, j, op)
+    d1O = mainDiagonal(grid, i, j, op)
+    d2O = otherDiagonal(grid, i, j, op)
+    freqArrO[horO] += 1
+    freqArrO[verO] += 1
+    freqArrO[d1O] += 1
+    freqArrO[d2O] += 1
+    score += freqArr[4] * 999999 + freqArr[3] * 5 + freqArr[2] * 2
+    if freqArrO[4]>=1:
+        score += 99999
+    # el fo2 da kan tmm
+    score += freqArrO[3] * 5 + freqArrO[2] * 2
     return score
+
 
 def getPlayerScore(grid, player, op):
     score = 0
@@ -317,7 +333,6 @@ def getPlayerScore(grid, player, op):
         score -=10000
     if Win(grid,op):
         score += 1000000
-        score = 0
     for i in range(0, 6):
         for j in range(0, 7):
             if (grid[i][j] == player):
