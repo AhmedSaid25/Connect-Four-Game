@@ -2,6 +2,7 @@ from Minimax import *
 from tkinter import *
 import numpy as np
 import pygame
+import sys
 import random
 import copy
 Grid = [[0, 0, 0, 0, 0, 0, 0],  # 0
@@ -11,7 +12,9 @@ Grid = [[0, 0, 0, 0, 0, 0, 0],  # 0
         [0, 0, 0, 0, 0, 0, 0],  # 4
         [0, 0, 0, 0, 0, 0, 0]  # 5
        ]
-
+def terminate(window):
+    window.destroy()
+    sys.exit()
 def reverseCopy(board):
     column = 7
     row = 6
@@ -137,9 +140,10 @@ def menu(board):
         Radiobutton(window, text=j, variable=u, value=hardness).pack(side=TOP, ipady=5)
 
     Playbutton = Button(window, text='play', bd='7', command=ConnectFour)
-
     Playbutton.pack()
     window.mainloop()
+    window.protocol('WM_DELETE_WINDOW', terminate(window))
+
 
 
 if __name__ == '__main__':

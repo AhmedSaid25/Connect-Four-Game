@@ -20,7 +20,7 @@ def main():
         # print(Game)
 
         # YOUR CODE GOES HERE
-        bestColumn = makeMinimax(game_board)
+        bestColumn = makeMinimax(game_board,1,0)
         board.print_grid (game_board)
         print("answer: ", bestColumn)
         board.select_column(bestColumn)
