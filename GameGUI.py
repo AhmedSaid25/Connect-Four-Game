@@ -1,6 +1,5 @@
 from Minimax import *
 from tkinter import *
-from Alpha_Beta import *
 import numpy as np
 import pygame
 import sys
