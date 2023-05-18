@@ -82,7 +82,10 @@ def ConnectFour():
     #  print(getScore(board))
     while not game_end:
         print(board)
-        do_move(board, 1,2)
+        ## shar7 el function :
+        ##do_move(algorithm, depth, board, player1, player2)
+        ## 1-> alpha beta, 2-> minimax
+        do_move(2,5,board, 1,2)
         if Win(board,1):
             font = pygame.font.Font(None, 75)
             WinningAgent = font.render("Agent Wins !", True, YELLOW)
@@ -97,7 +100,7 @@ def ConnectFour():
         new_board = reverseCopy(board)
         PlayTime_board(new_board)
         pygame.display.update()
-        do_move(board, 2, 1)
+        do_move(2,5,board, 2, 1)
         # random_column = random.randint(0, 6)
         # set_cell(board, 'X', random_column)
         if Win(board,2):
@@ -129,7 +132,9 @@ def menu(board):
     Algorithm = {"Alphabeta": "1",
                  "Minimax": "2"}
     hardness = {"Easy": "1",
-                "Hard": "2"}
+                "Intermediate": "2",
+                "Hard" : "3",
+                "Advanced" : "4"}
     algo = Label(window, text="Choose Algorithm")
     algo.config(font=("Courier", 15))
     algo.pack()

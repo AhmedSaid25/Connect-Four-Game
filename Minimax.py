@@ -153,12 +153,15 @@ def Win(board, symbol):
 
 
 ########## MINMAX Algorithm   #########
-def do_move(grid, Agent, Computer):
-    best_column = makeMinimax(grid,Agent,Computer)
+def do_move(algorithm,depth,grid, Agent, Computer):
+    if algorithm == 2:
+        best_column = makeMinimax(depth, grid, Agent, Computer)
+    else:
+        best_column = makeAlphaBeta(depth,grid,Agent,Computer)
     set_cell(grid, Agent, best_column)
 
 
-def makeMinimax(grid, Agent, Computer):
+def makeMinimax(depth,grid, Agent, Computer):
 
     #print_grid(grid)
     scores = []
@@ -167,23 +170,13 @@ def makeMinimax(grid, Agent, Computer):
         if i in columns:
             boardCopy = copy.deepcopy(grid)
             set_cell(boardCopy, Agent, i)
-            score = Minimax(Agent, Computer,boardCopy, 4,False)
+            score = Minimax(Agent, Computer,boardCopy, depth,False)
             scores.append(score)
         else:
             scores.append(-math.inf)
     print(scores)
     bestc = max(range(len(scores)), key=lambda i: scores[i])
     return bestc
-
-# def convert (mat1 ,mat2):
-#     for i in range(len(mat2)):
-#         for j in range(len(mat2[i])):
-#             if(mat2[i][j]==EMPTY):
-#                 mat1[i][j]=EMPTY
-#             elif mat2[i][j]==RED:
-#                 mat1[i][j]=RED
-#             elif mat2[i][j]==BLUE:
-#                 mat1[i][j]=BLUE
 
 
 def Minimax(Agent, Computer, grid, currentDepth, maxim):
@@ -230,6 +223,53 @@ def Minimax(Agent, Computer, grid, currentDepth, maxim):
 
 ########## MINMAX Algorithm   #########
 
+######## start of alpha beta pruning #####
+def makeAlphaBeta(depth, grid, Agent, Computer):
+
+    scores = []
+    columns = getAvailableColumns(grid)
+    for i in range(7):
+        if i in columns:
+            boardCopy = copy.deepcopy(grid)
+            set_cell(boardCopy, Agent, i)
+            score = AlphaBeta(Agent, Computer, boardCopy, depth, -float('inf'), float('inf'), False)
+            scores.append(score)
+        else:
+            scores.append(-math.inf)
+    bestc = max(range(len(scores)), key=lambda i: scores[i])
+    return bestc
+
+
+def AlphaBeta(Agent, Computer, grid, currentDepth, alpha, beta, maxim):
+    columns = getAvailableColumns(grid)
+    gameEnd = check_if_game_end(grid)
+    if gameEnd or currentDepth == 0:
+        score = getScore(grid, Agent, Computer)
+        return score
+
+    if maxim:
+        curr = -math.inf
+        for c in columns:
+            boardCopy = copy.deepcopy(grid)
+            set_cell(boardCopy, Agent, c)
+            newScore = AlphaBeta(Agent, Computer, boardCopy, currentDepth - 1, alpha, beta, False)
+            curr = max(curr, newScore)
+            alpha = max(alpha, curr)
+            if beta <= alpha:
+                break
+        return curr
+    else:
+        curr = math.inf
+        for c in columns:
+            boardCopy = copy.deepcopy(grid)
+            set_cell(boardCopy, Computer, c)
+            newScore = AlphaBeta(Agent, Computer, boardCopy, currentDepth - 1, alpha, beta, True)
+            curr = min(curr, newScore)
+            beta = min(beta, curr)
+            if beta <= alpha:
+                break
+        return curr
+##### end of ALpha beta #######
 
 ######### get Score #########
 
@@ -382,33 +422,33 @@ def print_grid(board):
 
 # Agent = 1
 # Computer = 2
-def play(board):
-    cnt = 0
-    game_end = False
-
-    print_grid(board)
-    while not game_end:
-        ## first player
-        print("player 1 turn")
-        bestC = makeMinimax(board,1,2)
-        set_cell(board, 1, bestC)
-        if Win(board,1):
-            print("player 1 won")
-            game_end = True
-            print_grid(board)
-            break
-        print_grid(board)
-
-        ##second player
-        print("player 2 turn")
-        bestC = makeMinimax(board, 2, 1)
-        set_cell(board, 2, bestC)
-        if Win(board,2):
-            print("player 2 won")
-            game_end = True
-            print_grid(board)
-            break
-        print_grid(board)
-
-if __name__ == "__main__":
-    play(Grid)
+# def play(board):
+#     cnt = 0
+#     game_end = False
+#
+#     print_grid(board)
+#     while not game_end:
+#         ## first player
+#         print("player 1 turn")
+#         bestC = makeMinimax(board,1,2)
+#         set_cell(board, 1, bestC)
+#         if Win(board,1):
+#             print("player 1 won")
+#             game_end = True
+#             print_grid(board)
+#             break
+#         print_grid(board)
+#
+#         ##second player
+#         print("player 2 turn")
+#         bestC = makeMinimax(board, 2, 1)
+#         set_cell(board, 2, bestC)
+#         if Win(board,2):
+#             print("player 2 won")
+#             game_end = True
+#             print_grid(board)
+#             break
+#         print_grid(board)
+#
+# if __name__ == "__main__":
+#     play(Grid)
