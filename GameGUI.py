@@ -27,7 +27,8 @@ def reverseCopy(board):
         temp=[]
     return new_board
 
-def ConnectFour():
+def ConnectFour(chosen_algorithm,chosen_level):
+
     RED=(255 ,0,0)
     YELLOW = (255, 255, 0)
     BLUE = (0, 0, 255)
@@ -74,18 +75,35 @@ def ConnectFour():
     drawBoard(board)
     pygame.display.update()
 
-    Computer = 0
-    AI= 1
+    algo_agent=1
+    depth_agent=3
+    if(chosen_algorithm=="Minimax"):
+        algo_agent=2
+        depth_agent=4
+    else:
+        algo_agent=1
+        depth_agent=5
 
+    computer_level = 1
+    if(chosen_level=="Easy"):
+        computer_level=1
+    elif(chosen_level=="Intermediate"):
+        computer_level=2
+    elif(chosen_level=="Hard"):
+        computer_level=3
+    else :
+        computer_level=4
     cnt = 0
     game_end = False
+
     #  print(getScore(board))
     while not game_end:
         print(board)
         ## shar7 el function :
         ##do_move(algorithm, depth, board, player1, player2)
         ## 1-> alpha beta, 2-> minimax
-        do_move(1,5,board, 1,2)
+        print("hour btswt ")
+        do_move(algo_agent,depth_agent,board, 1,2)
         if Win(board,1):
             font = pygame.font.Font(None, 75)
             WinningAgent = font.render("Agent Wins !", True, YELLOW)
@@ -111,9 +129,15 @@ def ConnectFour():
         new_board = reverseCopy(board)
         PlayTime_board(new_board)
         pygame.display.update()
-        do_move(1,5,board, 2, 1)
-        # random_column = random.randint(0, 6)
-        # set_cell(board, 2, random_column)
+        if(computer_level==1):
+            random_column = random.randint(0, 6)
+            set_cell(board, 2, random_column)
+        elif(computer_level==2):
+            do_move(2,computer_level,board, 2, 1)
+        else :
+            do_move(algo_agent, depth_agent, board, 2, 1)
+
+
         if Win(board,2):
             font = pygame.font.Font(None, 75)
             WinningComputer = font.render("Computer wins !", True, RED)
@@ -150,27 +174,28 @@ def menu(board):
     header = Label(window, text="Connect 4")
     header.config(font=("Courier", 30))
     header.pack()
-    v = StringVar(window, "1")
-    u = StringVar(window, "1")
+
     Algorithm = {"Alphabeta": "1",
                  "Minimax": "2"}
     hardness = {"Easy": "1",
                 "Intermediate": "2",
-                "Hard" : "3",
-                "Advanced" : "4"}
+                "Advanced" : "4"
+                }
+    v = StringVar(window, Algorithm["Alphabeta"])
+    u = StringVar(window, hardness["Easy"])
     algo = Label(window, text="Choose Algorithm")
     algo.config(font=("Courier", 15))
     algo.pack()
 
-    for (i, Algorithm) in Algorithm.items():
-        Radiobutton(window, text=i, variable=v,value=Algorithm).pack(side=TOP, ipady=5)
+    for (i, value) in Algorithm.items():
+        Radiobutton(window, text=i, variable=v, value=value).pack(side=TOP, ipady=5)
     level = Label(window, text="Choose Level")
     level.config(font=("Courier", 15))
     level.pack()
-    for (j, hardness) in hardness.items():
-        Radiobutton(window, text=j, variable=u, value=hardness).pack(side=TOP, ipady=5)
+    for (j, value) in hardness.items():
+        Radiobutton(window, text=j, variable=u, value=value).pack(side=TOP, ipady=5)
 
-    Playbutton = Button(window, text='play', bd='7', command=ConnectFour)
+    Playbutton = Button(window, text='play', bd='7', command=lambda: ConnectFour(list(Algorithm.keys())[int(v.get()) - 1], list(hardness.keys())[int(u.get()) - 1]))
     Playbutton.pack()
     window.mainloop()
     window.protocol('WM_DELETE_WINDOW', terminate(window))
