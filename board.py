@@ -90,7 +90,9 @@ class Board:
         return (self.board, is_game_end)
 
     def select_column(self, column):
-        pyautogui.click(
-            self._get_grid_cordinates()[column][1] + LEFT,
-            self._get_grid_cordinates()[column][0] + TOP,
-        )
+        pyautogui.click(LEFT + self._get_grid_cordinates()[column*6][0],TOP)
+    # def select_column(self, column):
+    #     pyautogui.click(
+    #         self._get_grid_cordinates()[column][1] + LEFT,
+    #         self._get_grid_cordinates()[column][0] + TOP,
+    #     )

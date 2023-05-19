@@ -162,7 +162,7 @@ def chooseC (algorithm,depth,grid, Agent, Computer):
         best_column = makeMinimax(depth, grid, Agent, Computer)
     return best_column
 
-## to be called when playing in GameGUI.py
+## to be called when playing in GUI
 def do_move(algorithm,depth,grid, Agent, Computer):
     if (algorithm ==1):
         best_column = makeAlphaBeta(depth, grid, Agent, Computer)

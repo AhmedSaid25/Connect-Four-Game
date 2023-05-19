@@ -12,9 +12,9 @@ Grid = [[0, 0, 0, 0, 0, 0, 0],  # 0
         [0, 0, 0, 0, 0, 0, 0],  # 4
         [0, 0, 0, 0, 0, 0, 0]  # 5
        ]
-def terminate(window):
-    window.destroy()
-    sys.exit()
+# def terminate(window):
+#     window.destroy()
+#     sys.exit()
 def reverseCopy(board):
     column = 7
     row = 6
@@ -89,10 +89,8 @@ def ConnectFour(chosen_algorithm,chosen_level):
         computer_level=1
     elif(chosen_level=="Intermediate"):
         computer_level=2
-    elif(chosen_level=="Hard"):
+    else:
         computer_level=3
-    else :
-        computer_level=4
     cnt = 0
     game_end = False
 
@@ -134,8 +132,10 @@ def ConnectFour(chosen_algorithm,chosen_level):
             set_cell(board, 2, random_column)
         elif(computer_level==2):
             do_move(2,computer_level,board, 2, 1)
+            print("depth is : ", computer_level)
         else :
-            do_move(algo_agent, depth_agent, board, 2, 1)
+            do_move(2, computer_level, board, 2, 1)
+            print("depth is : ", computer_level)
 
 
         if Win(board,2):
@@ -179,7 +179,7 @@ def menu(board):
                  "Minimax": "2"}
     hardness = {"Easy": "1",
                 "Intermediate": "2",
-                "Advanced" : "4"
+                "Advanced" : "3"
                 }
     v = StringVar(window, Algorithm["Alphabeta"])
     u = StringVar(window, hardness["Easy"])
@@ -198,7 +198,7 @@ def menu(board):
     Playbutton = Button(window, text='play', bd='7', command=lambda: ConnectFour(list(Algorithm.keys())[int(v.get()) - 1], list(hardness.keys())[int(u.get()) - 1]))
     Playbutton.pack()
     window.mainloop()
-    window.protocol('WM_DELETE_WINDOW', terminate(window))
+    # window.protocol('WM_DELETE_WINDOW', terminate(window))
 
 
 
