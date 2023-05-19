@@ -100,7 +100,6 @@ def ConnectFour(chosen_algorithm,chosen_level):
         ## shar7 el function :
         ##do_move(algorithm, depth, board, player1, player2)
         ## 1-> alpha beta, 2-> minimax
-       # print("hour btswt ")
         do_move(algo_agent,depth_agent,board, 1,2)
         if Win(board,1):
             font = pygame.font.Font(None, 75)
