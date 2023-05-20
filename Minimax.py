@@ -165,9 +165,22 @@ def chooseC (algorithm,depth,grid, Agent, Computer):
 ## to be called when playing in GUI
 def do_move(algorithm,depth,grid, Agent, Computer):
     if (algorithm ==1):
+        sumalpha=0
+        start_time = time.time()
         best_column = makeAlphaBeta(depth, grid, Agent, Computer)
+        end_time = time.time()
+        total_time_Alphabeta = end_time - start_time
+        print("Total time taken by Alphabeta",total_time_Alphabeta)
+
+
     else:
+        sumMini=0
+        start_time = time.time()
         best_column = makeMinimax(depth, grid, Agent, Computer)
+        end_time = time.time()
+        total_time_Minimax = end_time - start_time
+        print("Total time taken by Minimax",total_time_Minimax)
+
     set_cell(grid, Agent, best_column)
 
 

@@ -10,11 +10,9 @@ Grid = [[0, 0, 0, 0, 0, 0, 0],  # 0
         [0, 0, 0, 0, 0, 0, 0],  # 2
         [0, 0, 0, 0, 0, 0, 0],  # 3
         [0, 0, 0, 0, 0, 0, 0],  # 4
-        [0, 0, 0, 0, 0, 0, 0]  # 5
+        [0, 0, 0, 0, 0, 0, 0]   # 5
        ]
-# def terminate(window):
-#     window.destroy()
-#     sys.exit()
+
 def reverseCopy(board):
     column = 7
     row = 6
@@ -36,15 +34,6 @@ def ConnectFour(chosen_algorithm,chosen_level):
 
     column = 7
     row = 6
-    def createBoard():
-        board = np.zeros((row, column))
-        return board
-
-
-    def printBoard(board):
-        print(np.flip(board, 0))
-
-
 
     def PlayTime_board(board):
         for c in range(column):
@@ -62,13 +51,10 @@ def ConnectFour(chosen_algorithm,chosen_level):
                 pygame.draw.rect(screen, BLUE, (c * squareSize, r * squareSize + squareSize, squareSize, squareSize))
                 pygame.draw.circle(screen, BLACK, ( int(c * squareSize + squareSize / 2), int(r * squareSize + squareSize + squareSize / 2)), radius)
     board = Grid
-    #printBoard(board)
-    GameOver = False
     pygame.init()
     squareSize = 100
     width = column * squareSize
     height = (row + 1) * squareSize
-
     size = (width, height)
     radius = int(squareSize / 2 - 5)
     screen = pygame.display.set_mode(size)
@@ -91,7 +77,6 @@ def ConnectFour(chosen_algorithm,chosen_level):
         computer_level=2
     else:
         computer_level=3
-    cnt = 0
     game_end = False
 
     #  print(getScore(board))
@@ -197,10 +182,8 @@ def menu(board):
     Playbutton = Button(window, text='play', bd='7', command=lambda: ConnectFour(list(Algorithm.keys())[int(v.get()) - 1], list(hardness.keys())[int(u.get()) - 1]))
     Playbutton.pack()
     window.mainloop()
-    # window.protocol('WM_DELETE_WINDOW', terminate(window))
 
 
 
 if __name__ == '__main__':
     menu(Grid)
-    #play(Board)
